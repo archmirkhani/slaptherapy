@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+    background:#ffdbe7;
+}
+
+
+/* WELCOME */
+
+#welcomeScreen{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:100;
+    cursor:pointer;
+    background:#ffdbe7;
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+}
+
+#welcomeImage{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+#welcomeScreen:hover #welcomeImage{
+    transform:scale(1.01);
+}
+
+#welcomeScreen.hide{
+    opacity:0;
+    transform:scale(1.05);
+    pointer-events:none;
+}
+
+
+/* SELECT SCREEN */
+
+#selectScreen{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #fff7fa 0%,
+            #ffd4e2 65%,
+            #f8b9ce 100%
+        );
+}
+
+#selectContainer{
+    width:95%;
+    height:95%;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+}
+
+#selectTitle{
+    font-size:54px;
+    font-weight:900;
+
+    color:#e94576;
+
+    margin-bottom:7px;
+
+    letter-spacing:1px;
+
+    text-shadow:
+        3px 3px 0 white,
+        0 8px 18px rgba(130,40,75,0.18);
+}
+
+#selectText{
+    color:#7d4b5a;
+
+    font-size:17px;
+    font-weight:bold;
+
+    margin-bottom:32px;
+}
+
+#characterList{
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+}
+
+.characterCard{
+    width:205px;
+    height:365px;
+
+    border-radius:26px;
+
+    cursor:pointer;
+
+    overflow:hidden;
+
+    border:4px solid rgba(255,255,255,0.95);
+
+    background:white;
+
+    box-shadow:
+        0 12px 26px rgba(120,45,75,0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border 0.25s ease;
+}
+
+.characterCard img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.characterCard:hover{
+    transform:
+        translateY(-14px)
+        scale(1.045)
+        rotate(-1deg);
+
+    border-color:#ff9db8;
+
+    box-shadow:
+        0 20px 38px rgba(195,60,105,0.32);
+}
+
+
+/* GAME */
+
+#gameScreen{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #fff9fb 0%,
+            #ffe4ec 55%,
+            #ffc7da 100%
+        );
+}
+
+
+/* FLASH */
+
+#hitFlash{
+    position:absolute;
+    inset:0;
+
+    background:white;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    z-index:50;
+}
+
+#hitFlash.flash{
+    animation:flashEffect 0.16s ease;
+}
+
+@keyframes flashEffect{
+
+    0%{
+        opacity:0;
+    }
+
+    35%{
+        opacity:0.45;
+    }
+
+    100%{
+        opacity:0;
+    }
+
+}
+
+
+/* TOP INFO */
+
+#targetName{
+    position:absolute;
+
+    top:25px;
+    left:30px;
+
+    padding:12px 23px;
+
+    background:rgba(255,255,255,0.95);
+
+    color:#d34e76;
+
+    border-radius:30px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 6px 16px rgba(100,45,70,0.15);
+}
+
+#slapCounter{
+    position:absolute;
+
+    top:25px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    padding:11px 22px;
+
+    background:#ff5f8b;
+
+    color:white;
+
+    border-radius:30px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 6px 16px rgba(135,45,75,0.20);
+
+    z-index:10;
+}
+
+#slapCounter.bounce{
+    animation:counterBounce 0.20s ease;
+}
+
+@keyframes counterBounce{
+
+    0%{
+        transform:
+            translateX(-50%)
+            scale(1);
+    }
+
+    50%{
+        transform:
+            translateX(-50%)
+            scale(1.15);
+    }
+
+    100%{
+        transform:
+            translateX(-50%)
+            scale(1);
+    }
+
+}
+
+
+/* RAGE METER */
+
+#rageContainer{
+    position:absolute;
+
+    top:82px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:360px;
+
+    text-align:center;
+
+    z-index:10;
+}
+
+#rageLabel{
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:#88485d;
+
+    margin-bottom:6px;
+
+    letter-spacing:1px;
+}
+
+#rageBar{
+    width:100%;
+    height:18px;
+
+    background:rgba(255,255,255,0.88);
+
+    border:3px solid white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 5px 13px rgba(100,45,70,0.12);
+}
+
+#rageFill{
+    width:0%;
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff9bb8,
+            #ff5d88,
+            #df315f
+        );
+
+    transition:width 0.28s ease;
+}
+
+
+/* BUTTONS */
+
+#buttons{
+    position:absolute;
+
+    top:25px;
+    right:30px;
+
+    display:flex;
+
+    gap:10px;
+
+    z-index:20;
+}
+
+.controlButton{
+    border:none;
+
+    border-radius:28px;
+
+    padding:11px 19px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f77c9e,
+            #dc4d78
+        );
+
+    color:white;
+
+    font-size:14px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 6px 15px rgba(120,45,70,0.20);
+
+    transition:0.2s;
+}
+
+.controlButton:hover{
+    transform:translateY(-2px) scale(1.06);
+}
+
+
+/* CHARACTER AREA */
+
+#targetArea{
+    width:650px;
+    height:735px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
+}
+
+#targetImage{
+    max-width:100%;
+    max-height:100%;
+
+    object-fit:contain;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    filter:
+        drop-shadow(
+            0 16px 24px
+            rgba(80,35,55,0.22)
+        );
+}
+
+#targetImage:hover{
+    transform:scale(1.012);
+}
+
+#targetImage.hit{
+    animation:slapAnimation 0.23s ease;
+}
+
+@keyframes slapAnimation{
+
+    0%{
+        transform:
+            translateX(0)
+            rotate(0deg)
+            scale(1);
+    }
+
+    28%{
+        transform:
+            translateX(28px)
+            rotate(5deg)
+            scale(0.98);
+    }
+
+    60%{
+        transform:
+            translateX(-12px)
+            rotate(-3deg)
+            scale(1.01);
+    }
+
+    100%{
+        transform:
+            translateX(0)
+            rotate(0deg)
+            scale(1);
+    }
+
+}
+
+
+/* INSTRUCTION */
+
+#instruction{
+    position:absolute;
+
+    bottom:25px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    padding:12px 26px;
+
+    background:rgba(255,255,255,0.93);
+
+    border-radius:30px;
+
+    color:#8d5062;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 6px 16px rgba(120,50,70,0.14);
+}
+
+
+/* RESULT POPUP */
+
+#resultPopup{
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:
+        translate(-50%,-50%)
+        scale(0.7);
+
+    width:420px;
+
+    padding:35px 30px;
+
+    background:
+        rgba(255,255,255,0.97);
+
+    border-radius:35px;
+
+    text-align:center;
+
+    z-index:80;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    box-shadow:
+        0 20px 50px
+        rgba(120,40,75,0.30);
+
+    border:4px solid #ff9ab7;
+
+    transition:
+        opacity 0.30s ease,
+        transform 0.30s ease;
+}
+
+#resultPopup.show{
+    opacity:1;
+
+    transform:
+        translate(-50%,-50%)
+        scale(1);
+
+    pointer-events:auto;
+}
+
+#resultTitle{
+    font-size:34px;
+
+    font-weight:900;
+
+    color:#e34b76;
+
+    margin-bottom:10px;
+}
+
+#resultText{
+    color:#7a4b59;
+
+    font-size:15px;
+
+    margin-bottom:22px;
+}
+
+#playAgain{
+    border:none;
+
+    padding:12px 26px;
+
+    border-radius:30px;
+
+    background:#ee5f87;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+
+#playAgain:hover{
+    transform:scale(1.06);
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="welcomeScreen">
+
+    <img
+    src="./welcome.png"
+    id="welcomeImage">
+
+</div>
+
+
+
+<div id="selectScreen">
+
+    <div id="selectContainer">
+
+        <div id="selectTitle">
+            CHOOSE YOUR TARGET
+        </div>
+
+        <div id="selectText">
+            Who needs a slap today?
+        </div>
+
+
+        <div id="characterList">
+
+            <div
+            class="characterCard"
+            onclick="chooseCharacter('teacher')">
+
+                <img src="./teacherclick.png">
+
+            </div>
+
+
+            <div
+            class="characterCard"
+            onclick="chooseCharacter('boss')">
+
+                <img src="./bossclick.png">
+
+            </div>
+
+
+            <div
+            class="characterCard"
+            onclick="chooseCharacter('exb')">
+
+                <img src="./exbclick.png">
+
+            </div>
+
+
+            <div
+            class="characterCard"
+            onclick="chooseCharacter('exg')">
+
+                <img src="./exgclick.png">
+
+            </div>
+
+
+            <div
+            class="characterCard"
+            onclick="chooseCharacter('alarm')">
+
+                <img src="./alarmclick.png">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="gameScreen">
+
+
+    <div id="hitFlash"></div>
+
+
+    <div id="targetName">
+        TARGET
+    </div>
+
+
+    <div id="slapCounter">
+        SLAPS : 0
+    </div>
+
+
+    <div id="rageContainer">
+
+        <div id="rageLabel">
+            RAGE METER
+        </div>
+
+        <div id="rageBar">
+
+            <div id="rageFill"></div>
+
+        </div>
+
+    </div>
+
+
+    <div id="buttons">
+
+        <button
+        id="backButton"
+        class="controlButton">
+
+            ← BACK
+
+        </button>
+
+
+        <button
+        id="resetButton"
+        class="controlButton">
+
+            ↻ RESET
+
+        </button>
+
+    </div>
+
+
+    <div id="targetArea">
+
+        <img
+        src="./teacher1.png"
+        id="targetImage">
+
+    </div>
+
+
+    <div id="instruction">
+
+        CLICK THE CHARACTER TO SLAP
+
+    </div>
+
+
+    <div id="resultPopup">
+
+        <div id="resultTitle">
+            STRESS RELEASED!
+        </div>
+
+        <div id="resultText">
+            Target defeated. Feeling better?
+        </div>
+
+        <button id="playAgain">
+            PLAY AGAIN
+        </button>
+
+    </div>
+
+
+</div>
+
+
+
+<audio
+src="./click.mp3"
+id="clickSound">
+</audio>
+
+
+<audio
+src="./slap.mp3"
+id="slapSound">
+</audio>
+
+
+
+<script>
+
+
+const welcomeScreen =
+document.getElementById("welcomeScreen");
+
+const selectScreen =
+document.getElementById("selectScreen");
+
+const gameScreen =
+document.getElementById("gameScreen");
+
+const targetImage =
+document.getElementById("targetImage");
+
+const targetName =
+document.getElementById("targetName");
+
+const slapCounter =
+document.getElementById("slapCounter");
+
+const rageFill =
+document.getElementById("rageFill");
+
+const clickSound =
+document.getElementById("clickSound");
+
+const slapSound =
+document.getElementById("slapSound");
+
+const resetButton =
+document.getElementById("resetButton");
+
+const backButton =
+document.getElementById("backButton");
+
+const hitFlash =
+document.getElementById("hitFlash");
+
+const resultPopup =
+document.getElementById("resultPopup");
+
+const playAgain =
+document.getElementById("playAgain");
+
+
+let currentCharacter = "";
+
+let currentStage = 1;
+
+let slapCount = 0;
+
+
+
+welcomeScreen.onclick = function(){
+
+    clickSound.currentTime = 0;
+
+    clickSound.play();
+
+
+    welcomeScreen.classList.add("hide");
+
+
+    setTimeout(function(){
+
+        welcomeScreen.style.display = "none";
+
+        selectScreen.style.display = "flex";
+
+    },600);
+
+};
+
+
+
+function chooseCharacter(character){
+
+    clickSound.currentTime = 0;
+
+    clickSound.play();
+
+
+    currentCharacter = character;
+
+    currentStage = 1;
+
+    slapCount = 0;
+
+
+    selectScreen.style.display = "none";
+
+    gameScreen.style.display = "flex";
+
+
+    targetImage.src =
+        "./" +
+        currentCharacter +
+        "1.png";
+
+
+    slapCounter.innerHTML =
+        "SLAPS : 0";
+
+
+    rageFill.style.width =
+        "0%";
+
+
+    resultPopup.classList.remove("show");
+
+
+    if(character == "teacher"){
+
+        targetName.innerHTML =
+        "TEACHER";
+
+    }
+
+    else if(character == "boss"){
+
+        targetName.innerHTML =
+        "BOSS";
+
+    }
+
+    else if(character == "exb"){
+
+        targetName.innerHTML =
+        "EX BOYFRIEND";
+
+    }
+
+    else if(character == "exg"){
+
+        targetName.innerHTML =
+        "EX GIRLFRIEND";
+
+    }
+
+    else if(character == "alarm"){
+
+        targetName.innerHTML =
+        "ALARM CLOCK";
+
+    }
+
+}
+
+
+
+targetImage.onclick = function(){
+
+
+    slapSound.pause();
+
+    slapSound.currentTime = 0;
+
+    slapSound.play();
+
+
+    slapCount++;
+
+
+    slapCounter.innerHTML =
+        "SLAPS : " +
+        slapCount;
+
+
+    slapCounter.classList.remove("bounce");
+
+    void slapCounter.offsetWidth;
+
+    slapCounter.classList.add("bounce");
+
+
+    targetImage.classList.remove("hit");
+
+    void targetImage.offsetWidth;
+
+    targetImage.classList.add("hit");
+
+
+    hitFlash.classList.remove("flash");
+
+    void hitFlash.offsetWidth;
+
+    hitFlash.classList.add("flash");
+
+
+    if(currentStage < 6){
+
+        currentStage++;
+
+
+        setTimeout(function(){
+
+            targetImage.src =
+                "./" +
+                currentCharacter +
+                currentStage +
+                ".png";
+
+        },90);
+
+
+        let ragePercent =
+            ((currentStage - 1) / 5) * 100;
+
+
+        rageFill.style.width =
+            ragePercent + "%";
+
+    }
+
+
+    if(currentStage == 6){
+
+        setTimeout(function(){
+
+            resultPopup.classList.add("show");
+
+        },450);
+
+    }
+
+};
+
+
+
+resetButton.onclick = function(){
+
+    currentStage = 1;
+
+    slapCount = 0;
+
+
+    targetImage.src =
+        "./" +
+        currentCharacter +
+        "1.png";
+
+
+    slapCounter.innerHTML =
+        "SLAPS : 0";
+
+
+    rageFill.style.width =
+        "0%";
+
+
+    resultPopup.classList.remove("show");
+
+};
+
+
+
+backButton.onclick = function(){
+
+    clickSound.currentTime = 0;
+
+    clickSound.play();
+
+
+    gameScreen.style.display = "none";
+
+    selectScreen.style.display = "flex";
+
+
+    currentStage = 1;
+
+    slapCount = 0;
+
+
+    rageFill.style.width =
+        "0%";
+
+
+    resultPopup.classList.remove("show");
+
+};
+
+
+
+playAgain.onclick = function(){
+
+    clickSound.currentTime = 0;
+
+    clickSound.play();
+
+
+    currentStage = 1;
+
+    slapCount = 0;
+
+
+    targetImage.src =
+        "./" +
+        currentCharacter +
+        "1.png";
+
+
+    slapCounter.innerHTML =
+        "SLAPS : 0";
+
+
+    rageFill.style.width =
+        "0%";
+
+
+    resultPopup.classList.remove("show");
+
+};
+
+
+</script>
+
+</body>
+
+</html>
